@@ -1,8 +1,6 @@
 #ifndef DEF_RECIPE_HPP
 #define DEF_RECIPE_HPP
 
-#include <vector>
-
 #include "./Aliments.hpp"
 
 class Recipe {

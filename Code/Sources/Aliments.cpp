@@ -16,6 +16,20 @@ Aliment::Aliment(const std::string &n, float p, float l, float g, float f, float
 
 {}
 
+bool operator==(const Aliment &l, const Aliment &r) {
+
+    return
+        l.proteins == r.proteins &&
+        l.lipids == r.lipids &&
+        l.glucids == r.glucids &&
+        l.fibers == r.fibers &&
+        l.calories == r.calories &&
+        l.vitamins == r.vitamins;
+
+}
+
+bool operator!=(const Aliment &l, const Aliment &r) { return !(l == r); }
+
 float Aliment::operator[](Nutrient_Index index) const {
 
     assert(index != Nutrient_Index::VITAMINS && "Can't return vitamins array in float");

@@ -3,6 +3,7 @@
 
 #include <iosfwd>
 #include <string>
+#include <vector>
 #include <array>
 
 namespace Conventions {
@@ -29,6 +30,9 @@ class Aliment {
 
     ~Aliment() = default;
 
+    friend bool operator==(const Aliment&, const Aliment&);
+    friend bool operator!=(const Aliment&, const Aliment&);
+
     Aliment& operator=(const Aliment&) = default;
     Aliment& operator=(Aliment&&) noexcept = default;
 
@@ -45,5 +49,11 @@ class Aliment {
     std::string name;
 
 };
+
+namespace Data_Base {
+
+    std::vector<Aliment> aliments;
+
+}
 
 #endif // DEF_ALIMENTS_HPP
