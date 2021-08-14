@@ -52,7 +52,7 @@ class Aliment {
 
 namespace Data_Base {
 
-    std::vector<Aliment> aliments;
+    extern std::vector<Aliment> aliments;
 
 }
 

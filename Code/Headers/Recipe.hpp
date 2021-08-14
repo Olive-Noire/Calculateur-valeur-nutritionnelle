@@ -3,16 +3,36 @@
 
 #include "./Aliments.hpp"
 
+struct Ingredient {
+
+    public:
+
+    unsigned int quantity{0};
+    Aliment aliment;
+
+};
+
 class Recipe {
 
     public:
 
-    Recipe() = default;
-
     Recipe(const Recipe&) = default;
     Recipe(Recipe&&) noexcept = default;
 
+    Recipe(const std::string& = "unamed");
+
     ~Recipe() = default;
+
+    bool Empty() const;
+    bool Unique() const;
+
+    std::size_t Size() const;
+
+    friend Recipe operator+(const Recipe&, const Recipe&);
+    Recipe& operator+=(const Recipe&);
+
+    friend bool operator==(const Recipe&, const Recipe&);
+    friend bool operator!=(const Recipe&, const Recipe&);
 
     Recipe& operator=(const Recipe&) = default;
     Recipe& operator=(Recipe&&) noexcept = default;
@@ -20,8 +40,12 @@ class Recipe {
     const Aliment& operator[](std::size_t) const;
     Aliment& operator[](std::size_t);
 
+    friend std::ostream& operator<<(std::ostream&, const Recipe&);
+
     private:
-    std::vector<Aliment> ingredients;
+
+    std::string name;
+    std::vector<Ingredient> ingredients;
 
 };
 
