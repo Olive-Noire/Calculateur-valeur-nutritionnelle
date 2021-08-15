@@ -10,6 +10,9 @@ struct Ingredient {
     unsigned int quantity{0};
     Aliment aliment;
 
+    friend bool operator==(const Ingredient&, const Ingredient&);
+    friend bool operator==(const Ingredient&, const Ingredient&);
+
 };
 
 class Recipe {
@@ -37,8 +40,8 @@ class Recipe {
     Recipe& operator=(const Recipe&) = default;
     Recipe& operator=(Recipe&&) noexcept = default;
 
-    const Aliment& operator[](std::size_t) const;
-    Aliment& operator[](std::size_t);
+    const Ingredient& operator[](std::size_t) const;
+    Ingredient& operator[](std::size_t);
 
     friend std::ostream& operator<<(std::ostream&, const Recipe&);
 

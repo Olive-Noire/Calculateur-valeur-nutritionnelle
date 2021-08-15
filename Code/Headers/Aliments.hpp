@@ -16,8 +16,59 @@ namespace Conventions {
 
 }
 
-enum Nutrient_Index : std::size_t {PROTEINS = 0, LIPIDS, GLUCIDS, FIBERS, CALORIES, VITAMINS};
+enum class Nutrient_Type {PROTEINS = 0, LIPIDS, GLUCIDS, FIBERS, CALORIES, VITAMINS};
 enum class Vitamin {A = 0, B1, B2, B3, B5, B6, B8, B9, B12, C, D, E, K, SIZE};
+
+class Nutrient {
+
+    public:
+
+    Nutrient();
+
+    Nutrient(const Nutrient&) = default;
+    Nutrient(Nutrient&&) noexcept = default;
+
+    Nutrient(Nutrient_Type, float = 0);
+
+    ~Nutrient() = default;
+
+    bool Any() const;
+    float Quantity() const;
+
+    Nutrient_Type Type() const;
+
+    Nutrient& operator++(int);
+    Nutrient& operator++();
+
+    Nutrient& operator--(int);
+    Nutrient& operator--();
+
+    friend Nutrient operator+(const Nutrient&, const Nutrient&);
+    friend Nutrient operator-(const Nutrient&, const Nutrient&);
+
+    Nutrient& operator+=(const Nutrient&);
+    Nutrient& operator-=(const Nutrient&);
+
+    friend bool operator<(const Nutrient&, const Nutrient&);
+    friend bool operator<=(const Nutrient&, const Nutrient&);
+
+    friend bool operator>(const Nutrient&, const Nutrient&);
+    friend bool operator>=(const Nutrient&, const Nutrient&);
+
+    friend bool operator==(const Nutrient&, const Nutrient&);
+    friend bool operator!=(const Nutrient&, const Nutrient&);
+
+    Nutrient& operator=(float);
+
+    Nutrient& operator=(const Nutrient&) = default;
+    Nutrient& operator=(Nutrient&&) noexcept = default;
+
+    private:
+
+    float quantity;
+    Nutrient_Type type;
+
+};
 
 class Aliment {
 
@@ -36,14 +87,13 @@ class Aliment {
     Aliment& operator=(const Aliment&) = default;
     Aliment& operator=(Aliment&&) noexcept = default;
 
-    float operator[](Nutrient_Index) const;
-    float& operator[](Nutrient_Index);
+    float operator[](Nutrient_Type) const;
 
     friend std::ostream& operator<<(std::ostream&, const Aliment&);
 
     private:
 
-    float proteins, lipids, glucids, fibers, calories;
+    Nutrient proteins, lipids, glucids, fibers, calories;
     std::array<bool, static_cast<std::size_t>(Vitamin::SIZE)> vitamins;
 
     std::string name;

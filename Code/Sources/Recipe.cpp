@@ -1,52 +1,42 @@
 #include "../Headers/Recipe.hpp"
 
-bool Recipe::Empty() const {
-
-
-
-}
-
-bool Recipe::Unique() const {
-
-
-
-}
-
-std::size_t Recipe::Size() const {
-
-
-
-}
+bool Recipe::Empty() const { return ingredients.empty(); }
+bool Recipe::Unique() const { return Size() == 1; }
+std::size_t Recipe::Size() const { return ingredients.size(); }
 
 Recipe operator+(const Recipe &l, const Recipe &r) {
 
+    Recipe tmp{l};
+    for (const Ingredient& i : r.ingredients) {
 
+        tmp.ingredients.push_back(i);
+
+    }
+
+    return tmp;
 
 }
 
 Recipe& Recipe::operator+=(const Recipe &r) {
 
+    for (const Ingredient& i : r.ingredients) {
 
+        ingredients.push_back(i);
 
-}
+    }
 
-bool operator==(const Recipe &l, const Recipe &r) {}
-bool operator!=(const Recipe &l, const Recipe &r) {}
-
-const Aliment& Recipe::operator[](std::size_t index) const {
-
-
+    return *this;
 
 }
 
-Aliment& Recipe::operator[](std::size_t index) {
+bool operator==(const Recipe &l, const Recipe &r) { return l.ingredients == r.ingredients; }
+bool operator!=(const Recipe &l, const Recipe &r) { return !(l == r); }
 
-
-
-}
+const Ingredient& Recipe::operator[](std::size_t index) const { return ingredients[index]; }
+Ingredient& Recipe::operator[](std::size_t index) { return ingredients[index]; }
 
 std::ostream& operator<<(std::ostream &flux, const Recipe &r) {
 
-
+    return flux;
 
 }
