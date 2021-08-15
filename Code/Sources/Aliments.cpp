@@ -65,7 +65,7 @@ float Aliment::operator[](Nutriment_Type index) const {
 
 std::ostream& operator<<(std::ostream &flux, const Aliment &a) {
 
-    flux << a.name << " (pour " << Conventions::nutrimentWeight << Conventions::weightNotation << ") :\n";
+    flux << a.name << " (pour " << Conventions::nutrimentWeight << Conventions::nutrimentNotation << ") :\n";
 
     flux <<
         a.proteins << std::endl <<

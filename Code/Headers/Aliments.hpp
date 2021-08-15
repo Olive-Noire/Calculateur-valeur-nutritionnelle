@@ -1,6 +1,7 @@
 #ifndef DEF_ALIMENTS_HPP
 #define DEF_ALIMENTS_HPP
 
+#include <unordered_map>
 #include <iostream>
 #include <string>
 #include <vector>
@@ -252,6 +253,7 @@ class Aliment {
 
     float operator[](Nutriment_Type) const;
 
+    template <Nutriment_Type Type> const Nutriment<Type>& GetNutriment() const;
     template <Nutriment_Type Type> Nutriment<Type>& GetNutriment();
 
     friend std::ostream& operator<<(std::ostream&, const Aliment&);
@@ -268,6 +270,13 @@ class Aliment {
     Nutriment<Nutriment_Type::VITAMINS> vitamins;
 
 };
+
+template <> inline const Nutriment<Nutriment_Type::PROTEINS>& Aliment::GetNutriment<Nutriment_Type::PROTEINS>() const { return proteins; }
+template <> inline const Nutriment<Nutriment_Type::LIPIDS>& Aliment::GetNutriment<Nutriment_Type::LIPIDS>() const { return lipids; }
+template <> inline const Nutriment<Nutriment_Type::GLUCIDS>& Aliment::GetNutriment<Nutriment_Type::GLUCIDS>() const { return glucids; }
+template <> inline const Nutriment<Nutriment_Type::FIBERS>& Aliment::GetNutriment<Nutriment_Type::FIBERS>() const { return fibers; }
+template <> inline const Nutriment<Nutriment_Type::CALORIES>& Aliment::GetNutriment<Nutriment_Type::CALORIES>() const { return calories; }
+template <> inline const Nutriment<Nutriment_Type::VITAMINS>& Aliment::GetNutriment<Nutriment_Type::VITAMINS>() const { return vitamins; }
 
 template <> inline Nutriment<Nutriment_Type::PROTEINS>& Aliment::GetNutriment<Nutriment_Type::PROTEINS>() { return proteins; }
 template <> inline Nutriment<Nutriment_Type::LIPIDS>& Aliment::GetNutriment<Nutriment_Type::LIPIDS>() { return lipids; }

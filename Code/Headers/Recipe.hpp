@@ -1,19 +1,11 @@
 #ifndef DEF_RECIPE_HPP
 #define DEF_RECIPE_HPP
 
+#include <iostream>
+
 #include "./Aliments.hpp"
 
-struct Ingredient {
-
-    public:
-
-    unsigned int quantity{0};
-    Aliment aliment;
-
-    friend bool operator==(const Ingredient&, const Ingredient&);
-    friend bool operator!=(const Ingredient&, const Ingredient&);
-
-};
+using Ingredient = std::pair<Aliment, unsigned int>; // <Aliment, quantity (in 'g')>
 
 class Recipe {
 
@@ -29,7 +21,30 @@ class Recipe {
     bool Empty() const;
     bool Unique() const;
 
+    bool Has(const Aliment&) const;
+
+    unsigned int Get(const Aliment&) const;
+    unsigned int& Get(const Aliment&);
+
+    void Remove(const Aliment&);
+
     std::size_t Size() const;
+
+    template <Nutriment_Type Type> float GetNutrimentTotal() const {
+
+        float total{0};
+        for (const Ingredient &i : ingredients) {
+
+            total += i.first.GetNutriment<Type>().Quantity()*(static_cast<double>(i.second)/Conventions::nutrimentWeight);
+
+        }
+
+        return total;
+
+    }
+
+    friend Recipe operator+(const Recipe&, const Ingredient&);
+    Recipe& operator+=(const Ingredient&);
 
     friend Recipe operator+(const Recipe&, const Recipe&);
     Recipe& operator+=(const Recipe&);
@@ -41,13 +56,13 @@ class Recipe {
     Recipe& operator=(Recipe&&) noexcept = default;
 
     const Ingredient& operator[](std::size_t) const;
-    Ingredient& operator[](std::size_t);
 
     friend std::ostream& operator<<(std::ostream&, const Recipe&);
 
+    std::string name;
+
     private:
 
-    std::string name;
     std::vector<Ingredient> ingredients;
 
 };
