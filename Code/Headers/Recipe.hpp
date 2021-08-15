@@ -11,7 +11,7 @@ struct Ingredient {
     Aliment aliment;
 
     friend bool operator==(const Ingredient&, const Ingredient&);
-    friend bool operator==(const Ingredient&, const Ingredient&);
+    friend bool operator!=(const Ingredient&, const Ingredient&);
 
 };
 

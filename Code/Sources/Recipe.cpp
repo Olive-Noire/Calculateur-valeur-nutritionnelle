@@ -1,5 +1,8 @@
 #include "../Headers/Recipe.hpp"
 
+bool operator==(const Ingredient &l, const Ingredient &r) { return l.quantity == r.quantity && l.aliment == r.aliment; }
+bool operator!=(const Ingredient &l, const Ingredient &r) { return !(l == r); }
+
 bool Recipe::Empty() const { return ingredients.empty(); }
 bool Recipe::Unique() const { return Size() == 1; }
 std::size_t Recipe::Size() const { return ingredients.size(); }

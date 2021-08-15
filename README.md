@@ -10,3 +10,7 @@ Un simple calculateur avec des fichiers lui permettant de calculer la valeur nut
 ## Fichier pour un aliment
 
 ## Fichier pour une recette
+
+# Doc
+
+Vous voulez savoir ce qu'est une valeur nutritionnelle ?

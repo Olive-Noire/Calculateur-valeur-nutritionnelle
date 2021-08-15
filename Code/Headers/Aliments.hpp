@@ -1,7 +1,7 @@
 #ifndef DEF_ALIMENTS_HPP
 #define DEF_ALIMENTS_HPP
 
-#include <iosfwd>
+#include <iostream>
 #include <string>
 #include <vector>
 #include <array>
@@ -9,64 +9,227 @@
 namespace Conventions {
 
     constexpr char weightNotation{'g'};
-    constexpr char nutrientNotation{'g'};
+    constexpr char nutrimentNotation{'g'};
     constexpr char caloriesNotation[5]{"kcal"};
 
-    constexpr unsigned int nutrientWeight{100};
+    constexpr unsigned int nutrimentWeight{100};
 
 }
 
-enum class Nutrient_Type {PROTEINS = 0, LIPIDS, GLUCIDS, FIBERS, CALORIES, VITAMINS};
-enum class Vitamin {A = 0, B1, B2, B3, B5, B6, B8, B9, B12, C, D, E, K, SIZE};
+enum class Nutriment_Type {PROTEINS = 0, LIPIDS, GLUCIDS, FIBERS, CALORIES, VITAMINS};
+enum class Vitamin {A = 0, B1, B2, B3, B5, B6, B8, B9, B12, C, D, E, K};
 
-class Nutrient {
+template <Nutriment_Type Type> class Nutriment {
 
     public:
 
-    Nutrient();
+    Nutriment() = default;
 
-    Nutrient(const Nutrient&) = default;
-    Nutrient(Nutrient&&) noexcept = default;
+    Nutriment(const Nutriment&) = default;
+    Nutriment(Nutriment&&) noexcept = default;
 
-    Nutrient(Nutrient_Type, float = 0);
+    Nutriment(float q = 0) : quantity{q*(q > 0)} {}
 
-    ~Nutrient() = default;
+    ~Nutriment() = default;
 
-    bool Any() const;
-    float Quantity() const;
+    bool Any() const { return quantity == 0; }
+    float Quantity() const { return quantity; }
 
-    Nutrient_Type Type() const;
+    Nutriment_Type GetType() const { return Type; }
 
-    Nutrient& operator++(int);
-    Nutrient& operator++();
+    Nutriment& operator++(int) { quantity++; }
+    Nutriment& operator++() { ++quantity; }
 
-    Nutrient& operator--(int);
-    Nutrient& operator--();
+    Nutriment& operator--(int) { quantity--; }
+    Nutriment& operator--() { --quantity; }
 
-    friend Nutrient operator+(const Nutrient&, const Nutrient&);
-    friend Nutrient operator-(const Nutrient&, const Nutrient&);
+    friend Nutriment operator+(const Nutriment &l, const Nutriment &r) { return Nutriment{l.quantity+r.quantity}; }
+    friend Nutriment operator-(const Nutriment &l, const Nutriment &r) { return Nutriment{l.quantity-r.quantity}; }
 
-    Nutrient& operator+=(const Nutrient&);
-    Nutrient& operator-=(const Nutrient&);
+    Nutriment& operator+=(const Nutriment &n) {
 
-    friend bool operator<(const Nutrient&, const Nutrient&);
-    friend bool operator<=(const Nutrient&, const Nutrient&);
+        *this = *this+n;
+        return *this;
 
-    friend bool operator>(const Nutrient&, const Nutrient&);
-    friend bool operator>=(const Nutrient&, const Nutrient&);
+    }
 
-    friend bool operator==(const Nutrient&, const Nutrient&);
-    friend bool operator!=(const Nutrient&, const Nutrient&);
+    Nutriment& operator-=(const Nutriment &n) {
 
-    Nutrient& operator=(float);
+        *this = *this-n;
+        return *this;
 
-    Nutrient& operator=(const Nutrient&) = default;
-    Nutrient& operator=(Nutrient&&) noexcept = default;
+    }
+
+    friend bool operator<(const Nutriment &l, const Nutriment &r) { return l.quantity < r.quantity; }
+    friend bool operator<=(const Nutriment &l, const Nutriment &r) { return l.quantity <= r.quantity; }
+
+    friend bool operator>(const Nutriment &l, const Nutriment &r) { return l.quantity > r.quantity; }
+    friend bool operator>=(const Nutriment &l, const Nutriment &r) { return l.quantity >= r.quantity; }
+
+    friend bool operator==(const Nutriment &l, const Nutriment &r) { return l.quantity == r.quantity; }
+    friend bool operator!=(const Nutriment &l, const Nutriment &r) { return l.quantity != r.quantity; }
+
+    Nutriment& operator=(float q) {
+        
+        quantity = q*(q > 0);
+        return *this;
+        
+    }
+
+    Nutriment& operator=(const Nutriment&) = default;
+    Nutriment& operator=(Nutriment&&) noexcept = default;
+
+    friend std::ostream& operator<<(std::ostream &flux, const Nutriment &n) {
+
+        switch(Type) {
+
+            case Nutriment_Type::PROTEINS:
+                flux << "Proteins";
+            break;
+
+            case Nutriment_Type::LIPIDS:
+                flux << "Lipids";
+            break;
+
+            case Nutriment_Type::GLUCIDS:
+                flux << "Glucids";
+            break;
+
+            case Nutriment_Type::FIBERS:
+                flux << "Fibers";
+            break;
+
+            case Nutriment_Type::CALORIES:
+                flux << "Calories";
+            break;
+
+        }
+
+        flux << " : " << n.quantity << Conventions::nutrimentNotation;
+        return flux;
+
+    }
 
     private:
 
     float quantity;
-    Nutrient_Type type;
+    Nutriment_Type type;
+
+};
+
+template <> class Nutriment<Nutriment_Type::VITAMINS> {
+
+    public:
+
+    Nutriment() = default;
+
+    Nutriment(const Nutriment&) = default;
+    Nutriment(Nutriment&&) noexcept = default;
+
+    Nutriment(bool b) : vitamins{b} {}
+
+    ~Nutriment() = default;
+
+    bool Any() const {
+
+        for (bool b : vitamins) {
+
+            if (b) {
+
+                return false;
+
+            }
+
+        }
+
+        return true;
+
+    }
+
+    bool Has(Vitamin v) const { return vitamins[static_cast<std::size_t>(v)]; }
+
+    std::size_t Numbers() const {
+
+        std::size_t num{0};
+        for (bool b : vitamins) {
+
+            if (b) num++;
+
+        }
+
+        return num;
+
+    }
+
+    bool operator[](Vitamin index) const { return vitamins[static_cast<std::size_t>(index)]; }
+    bool& operator[](Vitamin index) { return vitamins[static_cast<std::size_t>(index)]; }
+
+    friend bool operator<(const Nutriment &l, const Nutriment &r) { return l.Numbers() < r.Numbers(); }
+    friend bool operator<=(const Nutriment &l, const Nutriment &r) { return l.Numbers() <= r.Numbers(); }
+
+    friend bool operator>(const Nutriment &l, const Nutriment &r) { return l.Numbers() > r.Numbers(); }
+    friend bool operator>=(const Nutriment &l, const Nutriment &r) { return l.Numbers() >= r.Numbers(); }
+
+    friend bool operator==(const Nutriment &l, const Nutriment &r) { return l.vitamins == r.vitamins; }
+    friend bool operator!=(const Nutriment &l, const Nutriment &r) { return l.vitamins != r.vitamins; }
+
+    Nutriment& operator=(const Nutriment&) = default;
+    Nutriment& operator=(Nutriment&&) noexcept = default;
+
+    friend std::ostream& operator<<(std::ostream &flux, const Nutriment &n) {
+
+        flux << "Vitamins : ";
+
+        for (std::size_t i{0}; i < n.vitamins.size(); i++) {
+
+            if (n.vitamins[i]) {
+
+                switch (static_cast<Vitamin>(i)) {
+
+                    case Vitamin::A:
+                        flux << "A ";
+                    break;
+
+                    case Vitamin::B1:
+                    case Vitamin::B2:
+                    case Vitamin::B3:
+                    case Vitamin::B5:
+                    case Vitamin::B6:
+                    case Vitamin::B8:
+                    case Vitamin::B9:
+                    case Vitamin::B12:
+                        flux << 'B' << i-static_cast<std::size_t>(Vitamin::B1)+1 << ' ';
+                    break;
+
+                    case Vitamin::C:
+                        flux << "C ";
+                    break;
+
+                    case Vitamin::D:
+                        flux << "D ";
+                    break;
+
+                    case Vitamin::E:
+                        flux << "E ";
+                    break;
+
+                    case Vitamin::K:
+                        flux << "K ";
+                    break;
+
+                }
+
+            }
+
+        }
+
+        return flux;
+
+    }
+
+    private:
+
+    std::array<bool, 13> vitamins;
 
 };
 
@@ -87,18 +250,31 @@ class Aliment {
     Aliment& operator=(const Aliment&) = default;
     Aliment& operator=(Aliment&&) noexcept = default;
 
-    float operator[](Nutrient_Type) const;
+    float operator[](Nutriment_Type) const;
+
+    template <Nutriment_Type Type> Nutriment<Type>& GetNutriment();
 
     friend std::ostream& operator<<(std::ostream&, const Aliment&);
 
-    private:
-
-    Nutrient proteins, lipids, glucids, fibers, calories;
-    std::array<bool, static_cast<std::size_t>(Vitamin::SIZE)> vitamins;
-
     std::string name;
 
+    private:
+
+    Nutriment<Nutriment_Type::PROTEINS> proteins;
+    Nutriment<Nutriment_Type::LIPIDS> lipids;
+    Nutriment<Nutriment_Type::GLUCIDS> glucids;
+    Nutriment<Nutriment_Type::FIBERS> fibers;
+    Nutriment<Nutriment_Type::CALORIES> calories;
+    Nutriment<Nutriment_Type::VITAMINS> vitamins;
+
 };
+
+template <> inline Nutriment<Nutriment_Type::PROTEINS>& Aliment::GetNutriment<Nutriment_Type::PROTEINS>() { return proteins; }
+template <> inline Nutriment<Nutriment_Type::LIPIDS>& Aliment::GetNutriment<Nutriment_Type::LIPIDS>() { return lipids; }
+template <> inline Nutriment<Nutriment_Type::GLUCIDS>& Aliment::GetNutriment<Nutriment_Type::GLUCIDS>() { return glucids; }
+template <> inline Nutriment<Nutriment_Type::FIBERS>& Aliment::GetNutriment<Nutriment_Type::FIBERS>() { return fibers; }
+template <> inline Nutriment<Nutriment_Type::CALORIES>& Aliment::GetNutriment<Nutriment_Type::CALORIES>() { return calories; }
+template <> inline Nutriment<Nutriment_Type::VITAMINS>& Aliment::GetNutriment<Nutriment_Type::VITAMINS>() { return vitamins; }
 
 namespace Data_Base {
 
